@@ -18,6 +18,7 @@ const BASE_CARD_URL = 'https://deckofcardsapi.com/api/deck/';
 function Deck() {
   const [deck, setDeck] = useState({});
   const [cards, setCards] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(function getDeck() {
     async function getDeckFromAPI() {
@@ -28,6 +29,13 @@ function Deck() {
     getDeckFromAPI();
   }, [])
 
+  async function shuffleDeck() {
+    setIsLoading(true);
+    const response = await axios.get(BASE_DECK_URL);
+    setDeck(response.data);
+    setCards([]);
+    setIsLoading(false);
+  }
 
   async function drawCard() {
     const cardRes = await axios.get(`${BASE_CARD_URL}${deck.deck_id}/draw`);
@@ -40,6 +48,7 @@ function Deck() {
       {deck.remaining === 0 && <p>Error: no cards remaining!</p>}
       {deck.remaining >= 1 && <button onClick={drawCard}>Draw a Card</button>}
       {cards.length > 0 && <Cards cards={cards} />}
+      <button onClick={shuffleDeck} disabled={isLoading}>Shuffle!</button>
     </>
   )
 }
