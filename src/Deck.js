@@ -9,6 +9,7 @@ const BASE_CARD_URL = 'https://deckofcardsapi.com/api/deck/';
  *
  * State:
  * - deckId
+ * - cards
  *
  * Effects:
  * - shuffle deck upon mount & shuffle button click
@@ -18,13 +19,13 @@ function Deck() {
   const [deck, setDeck] = useState({});
   const [cards, setCards] = useState([]);
 
-  useEffect(function shuffleDeck() {
-    async function getDeck() {
+  useEffect(function getDeck() {
+    async function getDeckFromAPI() {
       const response = await axios.get(BASE_DECK_URL);
       setDeck(response.data);
     }
 
-    getDeck();
+    getDeckFromAPI();
   }, [])
 
 
@@ -33,7 +34,6 @@ function Deck() {
     setCards(c => [...c, cardRes.data.cards[0]]);
     setDeck({...deck, remaining: cardRes.data.remaining});
   }
-  console.log(cards)
 
   return (
     <>
@@ -42,8 +42,6 @@ function Deck() {
       {cards.length > 0 && <Cards cards={cards} />}
     </>
   )
-
-
 }
 
 export default Deck;
